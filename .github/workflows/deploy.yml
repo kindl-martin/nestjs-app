@@ -8,6 +8,8 @@ jobs:
     name: Deploy app
     runs-on: ubuntu-latest
     concurrency: deploy-group
+    env:
+      FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -20,18 +22,16 @@ jobs:
         with:
           version: 10
           run_install: false
-      - name: Install dependecies
+      - name: Install dependencies
         run: pnpm i
       - name: Build the project
         run: npm run build
       - name: Init Fly.io
         uses: superfly/flyctl-actions/setup-flyctl@master
       - name: Fly.io add secrets
-        run:
-          flyctl secrets set DB_URL=${{ secrets.DB_URL }}
-          flyctl secrets set DB_USERNAME=${{ secrets.DB_USERNAME }}
+        run: |
+          flyctl secrets set DB_HOST=${{ secrets.DB_HOST }}
+          flyctl secrets set DB_USER=${{ secrets.DB_USER }}
           flyctl secrets set DB_PASSWORD=${{ secrets.DB_PASSWORD }}
       - name: Deploy to Fly.io
         run: flyctl deploy --remote-only --ha=false
-        env:
-          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
