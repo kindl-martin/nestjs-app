@@ -3,7 +3,7 @@ import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from '../../src/app.module';
-import { UserDto } from '../../src/user/user.dto';
+import { UsersDto } from '../../src/users/users.dto';
 
 describe('User entity', () => {
   let app: INestApplication<App>;
@@ -29,7 +29,7 @@ describe('User entity', () => {
         name: 'test',
       })
       .expect(201)
-      .then((res) => res.body as UserDto);
+      .then((res) => res.body as UsersDto);
 
     userId = user.id;
     expect(userId).toBeDefined();
@@ -39,7 +39,7 @@ describe('User entity', () => {
     const user = await request(app.getHttpServer())
       .get(`/users/${userId}`)
       .expect(200)
-      .then((res) => res.body as UserDto);
+      .then((res) => res.body as UsersDto);
 
     expect(user.id).toEqual(userId);
   });

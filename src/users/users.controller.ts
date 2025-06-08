@@ -8,12 +8,12 @@ import {
   Param,
   Post,
 } from '@nestjs/common';
-import { UserService } from './user.service';
-import { User } from './user.entity';
+import { UsersService } from './users.service';
+import { User } from './users.entity';
 
 @Controller('users')
-export class UserController {
-  constructor(private userService: UserService) {}
+export class UsersController {
+  constructor(private userService: UsersService) {}
 
   @Get()
   async findAll() {
@@ -21,7 +21,7 @@ export class UserController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: number) {
+  async findOne(@Param('id') id: string) {
     return this.userService.findOne(id);
   }
 
@@ -32,7 +32,7 @@ export class UserController {
   }
 
   @Delete(':id')
-  async delete(@Param('id') id: number) {
+  async delete(@Param('id') id: string) {
     return this.userService.delete(id);
   }
 }

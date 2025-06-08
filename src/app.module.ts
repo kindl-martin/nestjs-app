@@ -1,7 +1,9 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserModule } from './user/user.module';
+import { UsersModule } from './users/users.module';
+import { OrdersModule } from './orders/orders.module';
+import { RLSMiddleware } from './middleware/rls.middleware';
 
 @Module({
   imports: [
@@ -15,13 +17,18 @@ import { UserModule } from './user/user.module';
         username: configService.get('DB_USER'),
         password: configService.get('DB_PASSWORD'),
         database: 'neondb',
-        entities: [__dirname + '/**/*.entity{.ts,.js}'],
         synchronize: true,
         ssl: true,
+        autoLoadEntities: true,
       }),
       inject: [ConfigService],
     }),
-    UserModule,
+    UsersModule,
+    OrdersModule,
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(RLSMiddleware).forRoutes('*');
+  }
+}
