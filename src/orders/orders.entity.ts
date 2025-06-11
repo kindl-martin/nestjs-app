@@ -1,4 +1,5 @@
 import {
+  Column,
   CreateDateColumn,
   Entity,
   JoinColumn,
@@ -6,6 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { User } from '../users/users.entity';
+import { OrderState } from './orders.enum';
 
 @Entity('orders')
 export class Order {
@@ -18,4 +20,11 @@ export class Order {
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
   createdAt: Date;
+
+  @Column({
+    type: 'enum',
+    enum: OrderState,
+    default: OrderState.NEW,
+  })
+  state: OrderState;
 }
