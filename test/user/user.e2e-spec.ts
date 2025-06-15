@@ -2,8 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { App } from 'supertest/types';
-import { AppModule } from '../../src/app.module';
-import { UsersDto } from '../../src/users/users.dto';
+import { AppModule } from '@app/app.module';
+import { UsersDto } from '@app/users/users.dto';
 
 describe('User entity', () => {
   let app: INestApplication<App>;
@@ -26,7 +26,8 @@ describe('User entity', () => {
     const user = await request(app.getHttpServer())
       .post('/users')
       .send({
-        name: 'test',
+        name: 'Name',
+        password: '123456',
       })
       .expect(201)
       .then((res) => res.body as UsersDto);

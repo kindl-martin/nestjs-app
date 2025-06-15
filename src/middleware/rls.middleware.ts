@@ -1,4 +1,3 @@
-// src/middleware/rls.middleware.ts
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 import { DataSource } from 'typeorm';
@@ -8,7 +7,7 @@ export class RLSMiddleware implements NestMiddleware {
   constructor(private readonly dataSource: DataSource) {}
 
   async use(req: Request, res: Response, next: NextFunction) {
-    const userId = req.cookies['user_id'] as string | undefined;
+    const userId = req.cookies?.['user_id'] as string | undefined;
 
     if (userId) {
       const queryRunner = this.dataSource.createQueryRunner();
