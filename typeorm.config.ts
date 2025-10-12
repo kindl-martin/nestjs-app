@@ -7,10 +7,10 @@ export default new DataSource({
   type: 'postgres',
   host: process.env.DB_HOST,
   port: 5432,
-  username: process.env.DB_OWNER_USER,
-  password: process.env.DB_OWNER_PASSWORD,
+  username: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-  ssl: process.env.DB_SSL === 'true',
+  ssl: true,
   entities: ['dist/**/*.entity{.ts,.js}'],
   migrations: ['dist/migrations/*{.ts,.js}'],
 });
