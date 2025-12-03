@@ -4,7 +4,7 @@ import { Controller, Get } from '@nestjs/common';
 export class HtmlController {
   @Get()
   get() {
-    return '<html lang="en"><body><div style="background: yellow;">SOME BLOCK</div></div></body></html>';
+    return '<html lang="en"><body><div style="background: yellow;">AHOJ, MAXI</div></div></body></html>';
   }
 
   @Get('/json')
