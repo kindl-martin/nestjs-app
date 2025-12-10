@@ -1,13 +1,17 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('users')
+@Index(['email'])
 export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({ nullable: false })
   name: string;
 
-  @Column({ type: 'text', select: false })
+  @Column({ unique: true, nullable: false })
+  email: string;
+
+  @Column({ type: 'text', select: false, nullable: false })
   password: string;
 }

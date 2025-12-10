@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 
 @Controller('html')
 export class HtmlController {
@@ -7,10 +7,12 @@ export class HtmlController {
     return '<html lang="en"><body><div style="background: yellow;">AHOJ, MAXI</div></div></body></html>';
   }
 
-  @Get('/json')
-  getJson() {
+  @Get('/json/:id')
+  getJson(@Param('id') id: string, @Query('name') name?: string) {
     return {
+      id,
       some: 'text',
+      name,
     };
   }
 }
