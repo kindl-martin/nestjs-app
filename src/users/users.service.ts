@@ -24,6 +24,20 @@ export class UsersService {
     return user;
   }
 
+  async findByEmail(email: string): Promise<User | null> {
+    const user = await this.userRepository
+      .createQueryBuilder('user')
+      .where('user.email = :email', { email })
+      .addSelect('user.password')
+      .getOne();
+
+    if (!user) {
+      throw new NotFoundException(`User with email ${email} not found`);
+    }
+
+    return user;
+  }
+
   async create(userData: Partial<User>): Promise<User> {
     if (userData.password) {
       userData.password = await bcrypt.hash(userData.password, 10);

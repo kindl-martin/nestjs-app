@@ -7,9 +7,16 @@ import {
   HttpStatus,
   Param,
   Post,
+  Request,
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
-import { Order } from './orders.entity';
+import { OrderState } from '@app/orders/orders.enum';
+import { Request as RequestExpress } from 'express';
+import { User } from '@app/users/users.entity';
+
+interface AuthenticatedRequest extends RequestExpress {
+  user: User;
+}
 
 @Controller('orders')
 export class OrdersController {
@@ -27,8 +34,11 @@ export class OrdersController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  async create(@Body() orderData: Partial<Order>) {
-    return this.ordersService.create(orderData);
+  async create(@Request() req: AuthenticatedRequest) {
+    return this.ordersService.create({
+      user: req.user,
+      state: OrderState.NEW,
+    });
   }
 
   @Delete(':id')
