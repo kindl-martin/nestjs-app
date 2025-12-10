@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Order } from './orders.entity';
 import { Repository } from 'typeorm';
+import { User } from '@app/users/users.entity';
 
 @Injectable()
 export class OrdersService {
@@ -10,16 +11,16 @@ export class OrdersService {
     private orderRepository: Repository<Order>,
   ) {}
 
-  async findAll(): Promise<Order[]> {
+  async findAll(user: User): Promise<Order[]> {
     return this.orderRepository.find({
+      where: { user },
       relations: ['user'],
     });
   }
 
-  async findOne(id: string): Promise<Order | null> {
+  async findOne(user: User, id: string): Promise<Order | null> {
     const order = await this.orderRepository.findOne({
-      where: { id },
-      relations: ['user'],
+      where: { id, user },
     });
     if (!order) {
       throw new NotFoundException(`Order with ID ${id} not found`);
@@ -33,8 +34,10 @@ export class OrdersService {
     return this.orderRepository.save(order);
   }
 
-  async delete(id: string) {
-    const order = await this.orderRepository.findOne({ where: { id } });
+  async delete(user: User, id: string) {
+    const order = await this.orderRepository.findOne({
+      where: { id, user },
+    });
     if (!order) {
       throw new NotFoundException(`Order with ID ${id} not found`);
     }

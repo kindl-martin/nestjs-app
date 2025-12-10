@@ -1,5 +1,4 @@
 import {
-  Body,
   Controller,
   Delete,
   Get,
@@ -7,34 +6,29 @@ import {
   HttpStatus,
   Param,
   Post,
-  Request,
+  Req,
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { OrderState } from '@app/orders/orders.enum';
-import { Request as RequestExpress } from 'express';
-import { User } from '@app/users/users.entity';
-
-interface AuthenticatedRequest extends RequestExpress {
-  user: User;
-}
+import type { Request } from 'express';
 
 @Controller('orders')
 export class OrdersController {
   constructor(private ordersService: OrdersService) {}
 
   @Get()
-  async findAll() {
-    return this.ordersService.findAll();
+  async findAll(@Req() req: Request) {
+    return this.ordersService.findAll(req.user);
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string) {
-    return this.ordersService.findOne(id);
+  async findOne(@Req() req: Request, @Param('id') id: string) {
+    return this.ordersService.findOne(req.user, id);
   }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  async create(@Request() req: AuthenticatedRequest) {
+  async create(@Req() req: Request) {
     return this.ordersService.create({
       user: req.user,
       state: OrderState.NEW,
@@ -42,7 +36,7 @@ export class OrdersController {
   }
 
   @Delete(':id')
-  async delete(@Param('id') id: string) {
-    return this.ordersService.delete(id);
+  async delete(@Req() req: Request, @Param('id') id: string) {
+    return this.ordersService.delete(req.user, id);
   }
 }

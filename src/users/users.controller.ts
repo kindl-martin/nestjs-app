@@ -7,22 +7,19 @@ import {
   HttpStatus,
   Param,
   Post,
+  Req,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from './users.entity';
+import { Request } from 'express';
 
 @Controller('users')
 export class UsersController {
   constructor(private userService: UsersService) {}
 
   @Get()
-  async findAll() {
-    return this.userService.findAll();
-  }
-
-  @Get(':id')
-  async findOne(@Param('id') id: string) {
-    return this.userService.findOne(id);
+  getUser(@Req() req: Request) {
+    return req.user;
   }
 
   @Post()
