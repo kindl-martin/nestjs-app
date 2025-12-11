@@ -5,7 +5,6 @@ import {
   Get,
   HttpCode,
   HttpStatus,
-  Param,
   Post,
   Req,
 } from '@nestjs/common';
@@ -29,7 +28,7 @@ export class UsersController {
   }
 
   @Delete(':id')
-  async delete(@Param('id') id: string) {
-    return this.userService.delete(id);
+  async delete(@Req() req: Request) {
+    return this.userService.delete(req.user.id);
   }
 }
