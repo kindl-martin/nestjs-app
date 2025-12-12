@@ -18,14 +18,16 @@ async function bootstrap() {
 
   app.use(cookieParser());
 
-  const config = new DocumentBuilder()
-    .setTitle('Nestjs app')
-    .setVersion('1.0')
-    .addBasicAuth()
-    .addSecurityRequirements('basic')
-    .build();
-  const documentFactory = () => SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, documentFactory);
+  if (process.env.NODE_ENV !== 'production') {
+    const config = new DocumentBuilder()
+      .setTitle('Nestjs app')
+      .setVersion('1.0')
+      .addBasicAuth()
+      .addSecurityRequirements('basic')
+      .build();
+    const documentFactory = () => SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup('api', app, documentFactory);
+  }
 
   await app.listen(process.env.PORT ?? 3000, '0.0.0.0', () =>
     console.log('Server is running on 0.0.0.0:3000'),
