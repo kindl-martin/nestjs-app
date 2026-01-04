@@ -5,6 +5,9 @@ import { App } from 'supertest/types';
 import { AppModule } from '@app/app.module';
 import { UsersDto } from '@app/users/users.dto';
 
+const email = 'name@email.com';
+const password = '123456';
+
 describe('User entity', () => {
   let app: INestApplication<App>;
   let userId: string;
@@ -27,7 +30,8 @@ describe('User entity', () => {
       .post('/users')
       .send({
         name: 'Name',
-        password: '123456',
+        email,
+        password,
       })
       .expect(201)
       .then((res) => res.body as UsersDto);
@@ -38,7 +42,8 @@ describe('User entity', () => {
 
   it('/ (GET)', async () => {
     const user = await request(app.getHttpServer())
-      .get(`/users/${userId}`)
+      .get(`/users`)
+      .auth(email, password)
       .expect(200)
       .then((res) => res.body as UsersDto);
 
@@ -46,8 +51,14 @@ describe('User entity', () => {
   });
 
   it('/ (DELETE)', async () => {
-    await request(app.getHttpServer()).delete(`/users/${userId}`).expect(200);
+    await request(app.getHttpServer())
+      .delete(`/users/${userId}`)
+      .auth(email, password)
+      .expect(200);
 
-    await request(app.getHttpServer()).get(`/users/${userId}`).expect(404);
+    await request(app.getHttpServer())
+      .get(`/users/${userId}`)
+      .auth(email, password)
+      .expect(404);
   });
 });

@@ -29,9 +29,11 @@ jobs:
       - name: Install dependencies
         run: pnpm i
       - name: Build the project
-        run: npm run build
+        run: pnpm build
       - name: Run migrations
         run: pnpm migrate
+      - name: Run tests
+        run: pnpm test:e2e
       - name: Init Fly.io
         uses: superfly/flyctl-actions/setup-flyctl@master
       - name: Fly.io add secrets
