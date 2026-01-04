@@ -19,7 +19,7 @@ export class UsersController {
 
   @Get()
   getUser(@Req() req: Request) {
-    return req.user;
+    return this.userService.findOne(req.user.id);
   }
 
   @Public()
