@@ -6,7 +6,7 @@ import { OrdersModule } from './orders/orders.module';
 import { HtmlModule } from './html/html.module';
 import { AuthModule } from '@app/auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
-import { BasicAuthGuard } from '@app/auth/basic-auth.guard';
+import { JwtAuthGuard } from '@app/auth/jwt-auth.guard';
 
 @Module({
   imports: [
@@ -33,7 +33,7 @@ import { BasicAuthGuard } from '@app/auth/basic-auth.guard';
   providers: [
     {
       provide: APP_GUARD,
-      useClass: BasicAuthGuard,
+      useClass: JwtAuthGuard,
     },
   ],
 })
