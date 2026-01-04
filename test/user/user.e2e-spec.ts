@@ -5,12 +5,12 @@ import { App } from 'supertest/types';
 import { AppModule } from '@app/app.module';
 import { UsersDto } from '@app/users/users.dto';
 
-const email = 'name@email.com';
-const password = '123456';
-
 describe('User entity', () => {
+  const email = 'name@icloud.com';
+  const password = '123456';
   let app: INestApplication<App>;
   let userId: string;
+  let jwtToken: string;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -25,7 +25,7 @@ describe('User entity', () => {
     await app.close();
   });
 
-  it('/ (POST)', async () => {
+  it('create user', async () => {
     const user = await request(app.getHttpServer())
       .post('/users')
       .send({
@@ -40,25 +40,39 @@ describe('User entity', () => {
     expect(userId).toBeDefined();
   });
 
-  it('/ (GET)', async () => {
+  it('login', async () => {
+    const response = await request(app.getHttpServer())
+      .post('/auth/login')
+      .send({
+        email,
+        password,
+      })
+      .expect(201);
+
+    const body = response.body as { accessToken: string };
+    jwtToken = body.accessToken;
+    expect(jwtToken).toBeDefined();
+  });
+
+  it('get user', async () => {
     const user = await request(app.getHttpServer())
       .get(`/users`)
-      .auth(email, password)
+      .set('Authorization', `Bearer ${jwtToken}`)
       .expect(200)
       .then((res) => res.body as UsersDto);
 
     expect(user.id).toEqual(userId);
   });
 
-  it('/ (DELETE)', async () => {
+  it('delete user', async () => {
     await request(app.getHttpServer())
       .delete(`/users/${userId}`)
-      .auth(email, password)
+      .set('Authorization', `Bearer ${jwtToken}`)
       .expect(200);
 
     await request(app.getHttpServer())
       .get(`/users/${userId}`)
-      .auth(email, password)
+      .set('Authorization', `Bearer ${jwtToken}`)
       .expect(404);
   });
 });
