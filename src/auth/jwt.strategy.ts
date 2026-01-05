@@ -4,7 +4,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { UsersService } from '../users/users.service';
 import { ConfigService } from '@nestjs/config';
 
-export interface JwtPayload {
+export class JwtPayload {
   email: string;
   sub: string;
   iat?: number;
@@ -25,7 +25,6 @@ export class JwtAuthStrategy extends PassportStrategy(Strategy, 'jwt') {
   }
 
   async validate(payload: JwtPayload) {
-    console.log('payloa', payload);
     const user = await this.usersService.findByEmail(payload.email);
     if (!user) {
       throw new UnauthorizedException('User not found');
