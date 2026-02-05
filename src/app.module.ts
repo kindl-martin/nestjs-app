@@ -7,6 +7,7 @@ import { HtmlModule } from './html/html.module';
 import { AuthModule } from '@app/auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from '@app/auth/jwt-auth.guard';
+import { PdfModule } from '@app/pdf/pdf.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { JwtAuthGuard } from '@app/auth/jwt-auth.guard';
     }),
     UsersModule,
     OrdersModule,
+    PdfModule,
     HtmlModule,
     AuthModule,
   ],
