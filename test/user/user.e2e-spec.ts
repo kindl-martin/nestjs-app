@@ -3,7 +3,7 @@ import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from '@app/app.module';
-import { UsersDto } from '@app/users/users.dto';
+import { User } from '@app/users/users.entity';
 
 describe('User entity', () => {
   const email = 'name@icloud.com';
@@ -34,7 +34,7 @@ describe('User entity', () => {
         password,
       })
       .expect(201)
-      .then((res) => res.body as UsersDto);
+      .then((res) => res.body as User);
 
     userId = user.id;
     expect(userId).toBeDefined();
@@ -59,7 +59,7 @@ describe('User entity', () => {
       .get(`/users`)
       .set('Authorization', `Bearer ${jwtToken}`)
       .expect(200)
-      .then((res) => res.body as UsersDto);
+      .then((res) => res.body as User);
 
     expect(user.id).toEqual(userId);
   });

@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   ConflictException,
   Injectable,
   NotFoundException,
@@ -8,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './users.entity';
 import { QueryFailedError, Repository } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
+import { CreateUserDto, UserDto } from '@app/users/users.dto';
 
 @Injectable()
 export class UsersService {
@@ -16,13 +16,13 @@ export class UsersService {
     private userRepository: Repository<User>,
   ) {}
 
-  async findOne(id: string): Promise<User | null> {
+  async findOne(id: string): Promise<UserDto | null> {
     const user = await this.userRepository.findOne({ where: { id } });
     if (!user) {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
 
-    return user;
+    return user.toDto();
   }
 
   async findByEmail(email: string): Promise<User | null> {
@@ -39,14 +39,15 @@ export class UsersService {
     return user;
   }
 
-  async create(userData: Partial<User>): Promise<User | null> {
-    if (userData.password) {
-      userData.password = await bcrypt.hash(userData.password, 10);
+  async create(createUserDto: CreateUserDto): Promise<UserDto | null> {
+    if (createUserDto.password) {
+      createUserDto.password = await bcrypt.hash(createUserDto.password, 10);
     }
 
     try {
-      const user = this.userRepository.create(userData);
-      return await this.userRepository.save(user);
+      const user = this.userRepository.create(createUserDto);
+      const savedUser = await this.userRepository.save(user);
+      return savedUser.toDto();
     } catch (error) {
       if (error instanceof QueryFailedError) {
         if (error.driverError === '23505') {

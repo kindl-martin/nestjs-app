@@ -9,9 +9,9 @@ import {
   Req,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { User } from './users.entity';
 import { Request } from 'express';
 import { Public } from '@app/auth/public.decorator';
+import { CreateUserDto } from '@app/users/users.dto';
 
 @Controller('users')
 export class UsersController {
@@ -25,11 +25,11 @@ export class UsersController {
   @Public()
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  async create(@Body() userData: Partial<User>) {
-    return this.userService.create(userData);
+  async create(@Body() createUserDto: CreateUserDto) {
+    return this.userService.create(createUserDto);
   }
 
-  @Delete(':id')
+  @Delete()
   async delete(@Req() req: Request) {
     return this.userService.delete(req.user.id);
   }
