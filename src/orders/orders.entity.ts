@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { User } from '../users/users.entity';
 import { OrderState } from './orders.enum';
+import { OrderDto } from '@app/orders/orders.dto';
 
 @Entity('orders')
 export class Order {
@@ -27,4 +28,16 @@ export class Order {
     default: OrderState.NEW,
   })
   state: OrderState;
+
+  @Column({ nullable: true })
+  description?: string;
+
+  toDto(): OrderDto {
+    return {
+      id: this.id,
+      state: this.state,
+      createdAt: this.createdAt,
+      description: this.description,
+    };
+  }
 }
