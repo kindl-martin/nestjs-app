@@ -66,12 +66,12 @@ describe('User entity', () => {
 
   it('delete user', async () => {
     await request(app.getHttpServer())
-      .delete(`/users/${userId}`)
+      .delete(`/users`)
       .set('Authorization', `Bearer ${jwtToken}`)
       .expect(200);
 
     await request(app.getHttpServer())
-      .get(`/users/${userId}`)
+      .get(`/users`)
       .set('Authorization', `Bearer ${jwtToken}`)
       .expect(404);
   });
